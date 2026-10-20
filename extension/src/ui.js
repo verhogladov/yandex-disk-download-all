@@ -166,6 +166,17 @@ ul.texts li { display: flex; align-items: center; justify-content: space-between
   }
 
   const ISSUES_URL = 'https://github.com/verhogladov/yandex-disk-download-all/issues';
+  /**
+   * Сколько готово, в процентах: по числу обработанных файлов или по скачанным байтам — что больше.
+   * Одно большое видео иначе всё время показывало бы «0 %», а тысячи мелких файлов,
+   * часть которых Яндекс не отдаёт, — застревали бы по байтам.
+   */
+  const progressPct = (s) => {
+    const processed = s.done + s.preview + s.failed + s.confirm + s.skipped + (s.zipped || 0);
+    const byFiles = s.total ? processed / s.total : 0;
+    const byBytes = s.totalBytes > 0 ? Math.min(1, (s.bytesDone || 0) / s.totalBytes) : 0;
+    return Math.max(byFiles, byBytes) * 100;
+  };
   const extLabel = (ext) => (ext ? '.' + ext : t('ext.none'));
   /** «a, b, c и ещё 4». */
   const listMore = (items, limit = 3) =>
@@ -295,8 +306,8 @@ ul.texts li { display: flex; align-items: center; justify-content: space-between
       let label;
       if (this.app.dead) label = t('fab.reload');
       else if (s.job) {
-        const processed = s.done + s.preview + s.failed + s.confirm + s.skipped + (s.zipped || 0);
-        const pct = s.total ? Math.floor((processed / s.total) * 100) : 0;
+        // 100 % — только когда задание действительно закончено.
+        const pct = Math.min(99, Math.floor(progressPct(s)));
         if (s.job.phase === 'running') {
           if (s.scanning && !s.total) label = t('fab.scanning');
           else if (s.zip && s.zip.waiting && !s.pending && !s.scanning) label = t('fab.savingZip');
@@ -335,7 +346,8 @@ ul.texts li { display: flex; align-items: center; justify-content: space-between
         choices.push({
           value: 'all',
           title: t('scope.all'),
-          sub: sp && sp.files_count ? `${t('count.files', { n: sp.files_count })} · ${formatBytes(Math.max(0, (sp.used || 0) - (sp.trash || 0)))}` : t('scope.allSub'),
+          // Это оценка Яндекса: в число файлов входит и корзина, а она не скачивается. Точное число — после поиска.
+          sub: sp && sp.files_count ? `≈ ${t('count.files', { n: sp.files_count })} · ${formatBytes(Math.max(0, (sp.used || 0) - (sp.trash || 0)))}` : t('scope.allSub'),
         });
         if (info.folder && info.folder !== '/disk') {
           choices.push({ value: 'folder', title: t('scope.folder', { name: info.folderName }), sub: t('scope.withSubfolders') });
@@ -850,7 +862,7 @@ ul.texts li { display: flex; align-items: center; justify-content: space-between
       if (!r || !s.job) return;
       const job = s.job;
       const processed = s.done + s.preview + s.failed + s.confirm + s.skipped + (s.zipped || 0);
-      const pct = s.total ? (processed / s.total) * 100 : 0;
+      const pct = job.phase === 'done' ? 100 : progressPct(s);
       r.title.textContent = job.scopeLabel;
       const zip = !!(job.dest && job.dest.type === 'zip');
       r.dest.textContent = !job.dest

@@ -2,7 +2,8 @@
 /*
  * Скриншоты для сайта и README на правдоподобном демо-Диске (поддельный сервер из tests/e2e).
  *   (cd tests/e2e && npm install) && NODE_PATH=tests/e2e/node_modules node scripts/screenshots.js
- * Картинки сохраняются в docs/. SETUP_ONLY=1 — только панели выбора, без долгого скачивания.
+ * Картинки сохраняются в docs/. SETUP_ONLY=1 — только панели выбора, без долгого скачивания;
+ * TYPES_ONLY=1 — панели выбора и окно типов файлов.
  */
 const fs = require('node:fs');
 const os = require('node:os');
@@ -184,6 +185,19 @@ async function main() {
     await sleep(200);
     await click('input[name=scope][value=all]');
     if (process.env.SETUP_ONLY) return;
+
+    // Выбор типов: поиск по всему демо-Диску, затем окно с типами — отмечены фото и видео.
+    if (process.env.TYPES_ONLY) {
+      await click('input[name=types][value=ask]');
+      await click('input[name=dest][value=local]');
+      await page.evaluate((r) => [...eval(r).querySelectorAll('button')].find((b) => b.textContent.startsWith('Начать')).click(), root);
+      await page.waitForFunction((r) => eval(r).querySelectorAll('input[data-group]').length > 0, { polling: 300, timeout: 180000 }, root);
+      for (const g of ['photo', 'video']) await click(`input[data-group="${g}"]`);
+      await page.evaluate((r) => (eval(r).querySelector('.panel').scrollTop = 0), root);
+      await sleep(300);
+      await shot('types');
+      return;
+    }
 
     // Для хода скачивания — на компьютер.
     await click('input[name=dest][value=local]');

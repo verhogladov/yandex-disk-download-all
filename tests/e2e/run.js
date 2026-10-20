@@ -764,6 +764,38 @@ async function main() {
     await pickLang('ru');
     await waitFor(async () => /^Готово/.test(await ui.fab(page)), { what: 'снова русский', timeout: 10000 }).catch(() => {});
     check('вернули русский — без пометки о переводе', /^Готово/.test(await ui.fab(page)) && !/Перевод|Translated/.test(await ui.text(page)), await ui.fab(page));
+
+    // ---------- 13. Один большой файл: процент растёт по байтам ----------
+    // Раньше процент считался только по готовым файлам: одно большое видео весь час показывало «0 %».
+    console.log('\n13. Один медленный файл: процент на кнопке растёт по ходу скачивания');
+    await clickButton(page, 'Новая загрузка');
+    await clickButton(page, 'Выбрать, что скачать');
+    await ui.choose(page, 'scope', 'pick');
+    if (await ui.click(page, 'Изменить выбор')) {
+      await page.evaluate(() => [...document.querySelector('ydd-download-all').shadowRoot.querySelectorAll('details.psel li button')].forEach((b) => b.click()));
+    }
+    if (!(await picker.names(page)).includes('slow.bin')) {
+      await pickerWaitFor(page, 'Медленно');
+      await picker.row(page, 'Медленно', 'open');
+    }
+    await pickerWaitFor(page, 'slow.bin');
+    await picker.row(page, 'slow.bin', 'toggle');
+    const picked13 = await picker.summary(page);
+    await clickButton(page, 'Готово');
+    await ui.choose(page, 'dest', 'local');
+    await ui.setChecked(page, 'skipDone', false);
+    await clickButton(page, 'Начать скачивание');
+    await sleep(300);
+    const started13 = (await ui.text(page)).replace(/\n+/g, ' | ').slice(0, 300);
+    const labels13 = [];
+    for (let i = 0; i < 300; i++) {
+      const l = await ui.fab(page);
+      if (labels13[labels13.length - 1] !== l) labels13.push(l);
+      if (/^Готово/.test(l)) break;
+      await sleep(100);
+    }
+    const mid13 = labels13.map((l) => /Скачивание · (\d+)%/.exec(l)).filter(Boolean).map((m) => Number(m[1]));
+    check('у единственного файла процент растёт, а не стоит на 0 % до конца', mid13.some((p) => p > 0 && p < 100), `${labels13.join(' → ')}; выбрано: ${picked13}; после старта: ${started13}`);
   } finally {
     await s3.close().catch(() => {});
     await browser.close().catch(() => {});
