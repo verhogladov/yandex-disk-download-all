@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Download All from Yandex Disk"
+  },
+  "extShortName": {
+    "message": "Download All"
+  },
+  "extDescription": {
+    "message": "Unofficial. Download your whole Yandex Disk, folders, selected items or public links — as files with folders or a ZIP archive."
+  },
+  "actionTitle": {
+    "message": "Download from Yandex Disk"
+  }
+}

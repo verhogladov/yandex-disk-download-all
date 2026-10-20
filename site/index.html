@@ -1,0 +1,596 @@
+<title>Скачать всё с Яндекс Диска</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Бесплатное расширение для Chrome: скачивает весь Яндекс Диск, папку, выделенные файлы или публичную ссылку по одному файлу, с сохранением папок.">
+<link rel="icon" href="icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://verhogladov.github.io/yandex-disk-download-all/">
+<meta property="og:title" content="Скачать всё с Яндекс Диска">
+<meta property="og:description" content="Бесплатное расширение возвращает кнопку «Скачать» для всего Диска, папок и выделенного: файлами, ZIP-архивом или в другое облако. 23 языка.">
+<meta property="og:image" content="https://verhogladov.github.io/yandex-disk-download-all/icon.png">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Макет: «манифест загрузки». Слева — рассказ, справа — то, что окажется на компьютере; ниже одна колонка для чтения. */
+:root {
+  --paper: #f5f7fb;
+  --sheet: #ffffff;
+  --ink: #131a2c;
+  --ink-soft: #4b5571;
+  --rule: #dde3ee;
+  --accent: #3a5ae8;
+  --accent-hover: #2d4bd2;
+  --accent-ink: #ffffff;
+  --accent-wash: #e8edfd;
+  --signal: #9a5a00;
+  --signal-wash: #fff2d9;
+  --ok: #1d7a49;
+  --miss: #b3261e;
+  --font-display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --measure: 66ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1322; --sheet: #161d31; --ink: #e7ebf5; --ink-soft: #a2abc1; --rule: #273049;
+    --accent: #7c93ff; --accent-hover: #93a6ff; --accent-ink: #0b1020; --accent-wash: #1d2747;
+    --signal: #f0b95f; --signal-wash: #2c2413; --ok: #6fd391; --miss: #ff8a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1322; --sheet: #161d31; --ink: #e7ebf5; --ink-soft: #a2abc1; --rule: #273049;
+  --accent: #7c93ff; --accent-hover: #93a6ff; --accent-ink: #0b1020; --accent-wash: #1d2747;
+  --signal: #f0b95f; --signal-wash: #2c2413; --ok: #6fd391; --miss: #ff8a80;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+img { max-width: 100%; height: auto; display: block; }
+[hidden] { display: none !important; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--accent-hover); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.45rem, 1.1rem + 1.4vw, 2rem); }
+h3 { font-size: 1.05rem; font-weight: 500; letter-spacing: 0; }
+p { margin: 0; }
+code, kbd, .mono { font-family: var(--font-mono); font-size: 0.9em; }
+code { background: var(--accent-wash); padding: 0.1em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+
+.wrap { max-width: 1120px; margin: 0 auto; }
+.narrow { max-width: var(--measure); }
+
+/* Шапка */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-weight: 600; }
+.brand img { width: 32px; height: 32px; border-radius: 8px; }
+.top nav { display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.95rem; }
+.top nav a { color: var(--ink-soft); text-decoration: none; }
+.top nav a:hover { color: var(--ink); }
+
+/* Первый экран */
+.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: clamp(28px, 5vw, 64px); align-items: center; padding-block: clamp(24px, 5vw, 56px) clamp(40px, 6vw, 72px); }
+.eyebrow { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+.hero h1 { font-size: clamp(2rem, 1.2rem + 3.4vw, 3.35rem); margin-block: 14px 18px; }
+.hero h1 .button-word { color: var(--accent); white-space: nowrap; }
+.lead { font-size: 1.15rem; color: var(--ink-soft); max-width: 34rem; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none; border: 1.5px solid var(--rule); color: var(--ink); background: var(--sheet); }
+.btn:hover { border-color: var(--ink-soft); color: var(--ink); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-ink); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.meta { margin-top: 14px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); }
+.shot { justify-self: center; width: 100%; max-width: 400px; }
+.shot img { width: 100%; border-radius: 18px; box-shadow: 0 24px 60px -24px rgba(19, 26, 44, 0.35), 0 0 0 1px var(--rule); background: var(--sheet); }
+
+/* Полоса с контекстом */
+.context { border-block: 1px solid var(--rule); padding-block: 22px; }
+.context .wrap { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 20px; align-items: baseline; }
+.date { font-family: var(--font-mono); font-weight: 500; color: var(--signal); white-space: nowrap; }
+.context p { color: var(--ink-soft); max-width: 62rem; }
+
+/* Секции */
+section.block { padding-block: clamp(48px, 7vw, 88px); }
+section.block + section.block { border-top: 1px solid var(--rule); }
+.section-head { display: grid; gap: 12px; margin-bottom: 32px; }
+.section-head p { color: var(--ink-soft); max-width: var(--measure); }
+
+/* Установка: настоящая последовательность — номера по делу */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; max-width: 46rem; counter-reset: step; }
+.steps > li { counter-increment: step; display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 16px; padding-block: 18px; border-top: 1px solid var(--rule); }
+.steps > li:first-child { border-top: 0; }
+.steps > li::before { content: counter(step); font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; width: 2.6rem; height: 2.6rem; border-radius: 50%; display: grid; place-items: center; background: var(--accent-wash); color: var(--accent); }
+.steps h3 { margin-bottom: 6px; }
+.steps p { color: var(--ink-soft); }
+.guides { margin-top: 28px; max-width: 46rem; }
+.guide-links { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 0.95rem; }
+.browsers { margin-top: 10px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; font-size: 0.95rem; }
+.browsers dt { color: var(--ink-soft); }
+.browsers dd { margin: 0; }
+
+.must { background: var(--signal-wash); border-radius: 14px; padding: 18px 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.must p { color: var(--ink); }
+.setting { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; font-size: 0.95rem; }
+.setting .label { min-width: 0; }
+.setting .label small { display: block; color: var(--ink-soft); font-size: 0.8rem; }
+.toggle { flex: none; width: 40px; height: 22px; border-radius: 999px; background: var(--rule); position: relative; }
+.toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--sheet); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
+.state-off { font-family: var(--font-mono); font-size: 0.75rem; color: var(--signal); letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Использование */
+.use { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: clamp(28px, 5vw, 60px); align-items: start; }
+.use ol { margin: 0; padding-left: 1.3rem; display: grid; gap: 14px; max-width: 36rem; }
+.use li::marker { font-family: var(--font-display); color: var(--accent); }
+.labels { display: grid; gap: 6px; margin-top: 8px; }
+.fab-label { display: inline-flex; align-items: center; gap: 8px; justify-self: start; background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 6px 14px 6px 10px; font-weight: 600; font-size: 0.9rem; }
+.fab-label svg { width: 16px; height: 16px; }
+.labels small { color: var(--ink-soft); }
+
+/* Манифест: дерево папок как на компьютере */
+.manifest { background: var(--sheet); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden; }
+.manifest header { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--rule); font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); }
+.tree { margin: 0; padding: 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.75; color: var(--ink); }
+.st-dim { color: var(--ink-soft); }
+.st-ok { color: var(--ok); }
+.st-pv { color: var(--signal); }
+.st-miss { color: var(--miss); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 12px 16px; border-top: 1px solid var(--rule); font-size: 0.85rem; color: var(--ink-soft); }
+.legend b { font-family: var(--font-mono); font-weight: 500; }
+.manifest-wrap { max-width: 760px; }
+.shot-inline { width: 100%; max-width: 420px; justify-self: center; }
+.shot-inline img { width: 100%; border-radius: 16px; box-shadow: 0 18px 48px -22px rgba(19, 26, 44, 0.35), 0 0 0 1px var(--rule); background: var(--sheet); }
+.cloud { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: clamp(28px, 5vw, 60px); align-items: start; }
+.cloud ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+.cloud li b { display: block; margin-bottom: 2px; }
+.cloud li span { color: var(--ink-soft); }
+.cloud .how { margin-top: 20px; padding-left: 1.3rem; display: grid; gap: 8px; color: var(--ink-soft); max-width: 36rem; }
+.cloud .how li::marker { color: var(--accent); font-family: var(--font-display); }
+
+/* Возможности */
+.features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; margin: 0; }
+.features > div { padding-block: 18px; border-top: 1px solid var(--rule); }
+.features dt { font-weight: 600; margin-bottom: 4px; }
+.features dd { margin: 0; color: var(--ink-soft); }
+
+/* Важно знать */
+.notes { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; max-width: var(--measure); }
+.notes li { padding-left: 1.4rem; position: relative; }
+.notes li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 8px; height: 8px; border-radius: 2px; background: var(--signal); }
+.notes b { font-weight: 600; }
+
+/* Конфиденциальность и открытый код */
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 64px); }
+.pair p + p { margin-top: 12px; }
+.pair p { color: var(--ink-soft); }
+.facts { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+.fact { font-family: var(--font-mono); font-size: 0.8rem; border: 1px solid var(--rule); border-radius: 999px; padding: 4px 12px; color: var(--ink-soft); background: var(--sheet); }
+
+/* Вопросы */
+.faq { max-width: 50rem; display: grid; }
+.faq details { border-top: 1px solid var(--rule); }
+.faq details:last-child { border-bottom: 1px solid var(--rule); }
+.faq summary { cursor: pointer; padding-block: 18px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--font-mono); color: var(--accent); font-size: 1.2rem; line-height: 1; }
+.faq details[open] summary::after { content: "−"; }
+.faq .answer { padding-bottom: 18px; color: var(--ink-soft); display: grid; gap: 10px; max-width: var(--measure); }
+
+/* Поддержка и помощь (появляются, когда указаны ссылки) */
+.support { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+.support > div { background: var(--sheet); border: 1px solid var(--rule); border-radius: 16px; padding: 24px; display: grid; gap: 14px; align-content: start; }
+.support p { color: var(--ink-soft); }
+
+footer.bottom { border-top: 1px solid var(--rule); padding-block: 28px 40px; font-size: 0.9rem; color: var(--ink-soft); }
+footer.bottom .wrap { display: grid; gap: 12px; }
+footer.bottom nav { display: flex; flex-wrap: wrap; gap: 18px; }
+
+@media (max-width: 860px) {
+  .hero, .use, .pair, .cloud { grid-template-columns: minmax(0, 1fr); }
+  .shot { max-width: 400px; }
+  .features { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+  .context .wrap { grid-template-columns: minmax(0, 1fr); }
+  .top nav { gap: 14px; }
+  .btn { width: 100%; justify-content: center; }
+  .must { padding: 14px; }
+  .setting { gap: 10px; padding: 10px 12px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .btn, .top nav a { transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top" id="top"><img src="icon.png" alt="" width="32" height="32">Скачать всё с Яндекс Диска</a>
+    <nav aria-label="Разделы">
+      <a href="#install">Установка</a>
+      <a href="#features">Возможности</a>
+      <a href="#faq">Вопросы</a>
+      <a data-link="repo" href="https://github.com/verhogladov/yandex-disk-download-all" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Расширение для Chrome · бесплатно · открытый код</p>
+        <h1>Верните кнопку <span class="button-word">«Скачать»</span> на&nbsp;Яндекс Диске</h1>
+        <p class="lead">Скачивает весь Диск, одну папку, выделенные файлы или публичную ссылку. Файлы сохраняются по одному, с той же структурой папок, что в облаке, или сразу складываются в ZIP-архив. Если на компьютере мало места — переносит сразу в другое облако или на ваш сервер.</p>
+        <div class="cta">
+          <a class="btn primary" data-link="download" href="https://github.com/verhogladov/yandex-disk-download-all/releases/latest/download/yandex-disk-download-all.zip" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+            Скачать расширение
+          </a>
+          <a class="btn" href="#install">Как установить</a>
+        </div>
+        <p class="meta">Версия 1.0.0 · ZIP, 1 МБ · Chrome, Яндекс Браузер, Edge · 23 языка</p>
+      </div>
+      <picture class="shot">
+        <source srcset="setup-dark.png" media="(prefers-color-scheme: dark)">
+        <img src="setup.png" width="884" height="1776" alt="Панель расширения: что скачать — весь Диск, папка или выделенное; куда сохранить — на компьютер, ZIP-архивом или в облако; кнопка «Начать скачивание»">
+      </picture>
+    </div>
+  </main>
+</div>
+
+<div class="context">
+  <div class="wrap">
+    <span class="date">11.10.2026</span>
+    <p>Яндекс отключил в веб-версии Диска скачивание папок, альбомов и нескольких файлов сразу. Один файл скачать по-прежнему можно. Расширение делает это за вас для каждого файла по очереди. <a href="https://meduza.io/news/2026/10/11/yandeks-ogranichil-skachivanie-faylov-iz-svoego-oblachnogo-hranilischa-yandeks-disk-chtoby-sohranit-rabotosposobnost-drugih-servisov-posle-ataki-na-data-tsentr" target="_blank" rel="noopener">Что случилось</a></p>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="block" id="install" aria-labelledby="install-title">
+    <div class="section-head">
+      <h2 id="install-title">Установка за две минуты</h2>
+      <p>Расширения пока нет в магазине Chrome, поэтому его ставят вручную. Это стандартный способ, он не требует прав администратора.</p>
+    </div>
+    <ol class="steps">
+      <li>
+        <div>
+          <h3>Скачайте и распакуйте архив</h3>
+          <p>Получится папка <code>yandex-disk-download-all</code>, внутри неё лежит файл <code>manifest.json</code>. Не удаляйте её: браузер берёт расширение из этой папки.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Откройте страницу расширений и включите «Режим разработчика»</h3>
+          <p>Скопируйте адрес в строку браузера. Переключатель режима разработчика находится вверху страницы.</p>
+          <dl class="browsers">
+            <dt>Chrome</dt><dd><code>chrome://extensions</code></dd>
+            <dt>Яндекс Браузер</dt><dd><code>browser://extensions</code></dd>
+            <dt>Edge</dt><dd><code>edge://extensions</code></dd>
+            <dt>Opera</dt><dd><code>opera://extensions</code></dd>
+          </dl>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Нажмите «Загрузить распакованное расширение»</h3>
+          <p>Выберите распакованную папку. В списке появится «Скачать всё с Яндекс Диска».</p>
+        </div>
+      </li>
+      <li>
+        <div class="must">
+          <h3>Выключите вопрос о месте сохранения</h3>
+          <p>Иначе браузер будет спрашивать, куда сохранить каждый файл. В Chrome: «Настройки → Скачанные файлы» или адрес <code>chrome://settings/downloads</code>.</p>
+          <div class="setting" role="img" aria-label="Переключатель «Всегда указывать место для скачивания» в положении «выключено»">
+            <span class="label">Всегда указывать место для скачивания<small>Настройки → Скачанные файлы</small></span>
+            <span class="state-off">выкл.</span>
+            <span class="toggle" aria-hidden="true"></span>
+          </div>
+        </div>
+      </li>
+    </ol>
+    <div class="guides">
+      <p><b>Простая инструкция по шагам</b> — для тех, кто ставит расширение впервые. Есть на 23 языках:</p>
+      <nav class="guide-links" aria-label="Инструкция на других языках">
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/ru.md" lang="ru" target="_blank" rel="noopener">Русский</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/en.md" lang="en" target="_blank" rel="noopener">English</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/uk.md" lang="uk" target="_blank" rel="noopener">Українська</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/be.md" lang="be" target="_blank" rel="noopener">Беларуская</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/kk.md" lang="kk" target="_blank" rel="noopener">Қазақша</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/uz.md" lang="uz" target="_blank" rel="noopener">Oʻzbekcha</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/ky.md" lang="ky" target="_blank" rel="noopener">Кыргызча</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/tg.md" lang="tg" target="_blank" rel="noopener">Тоҷикӣ</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/tk.md" lang="tk" target="_blank" rel="noopener">Türkmençe</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/az.md" lang="az" target="_blank" rel="noopener">Azərbaycanca</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/hy.md" lang="hy" target="_blank" rel="noopener">Հայերեն</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/ka.md" lang="ka" target="_blank" rel="noopener">ქართული</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/ro.md" lang="ro" target="_blank" rel="noopener">Română</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/tt.md" lang="tt" target="_blank" rel="noopener">Татарча</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/ba.md" lang="ba" target="_blank" rel="noopener">Башҡортса</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/cv.md" lang="cv" target="_blank" rel="noopener">Чӑвашла</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/sah.md" lang="sah" target="_blank" rel="noopener">Саха тыла</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/ce.md" lang="ce" target="_blank" rel="noopener">Нохчийн</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/os.md" lang="os" target="_blank" rel="noopener">Ирон</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/bxr.md" lang="bxr" target="_blank" rel="noopener">Буряад</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/udm.md" lang="udm" target="_blank" rel="noopener">Удмурт</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/kaa.md" lang="kaa" target="_blank" rel="noopener">Qaraqalpaqsha</a>
+        <a href="https://github.com/verhogladov/yandex-disk-download-all/blob/main/guide/crh.md" lang="crh" target="_blank" rel="noopener">Qırımtatarca</a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="block" id="how" aria-labelledby="how-title">
+    <div class="use">
+      <div>
+        <div class="section-head">
+          <h2 id="how-title">Как скачать</h2>
+        </div>
+        <ol>
+          <li>Откройте <a href="https://disk.yandex.ru/client/disk" target="_blank" rel="noopener">disk.yandex.ru</a> и войдите в аккаунт.</li>
+          <li>
+            Справа внизу появится кнопка. Подпись зависит от того, где вы:
+            <div class="labels">
+              <span class="fab-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Скачать весь Диск</span>
+              <small>в корне раздела «Файлы»; в папке — «Скачать папку», если что-то выделено — «Скачать выделенное»</small>
+            </div>
+          </li>
+          <li>Выберите, что скачать: весь Диск, папку или выделенное. Можно отметить нужные файлы и папки прямо в панели, даже из разных мест Диска. Затем нажмите «Начать скачивание».</li>
+          <li>Вкладку можно свернуть, но не закрывайте её до конца. Закрыли — откройте Диск снова, загрузка продолжится с того же места.</li>
+        </ol>
+      </div>
+      <picture class="shot-inline">
+        <source srcset="progress-dark.png" media="(prefers-color-scheme: dark)">
+        <img src="progress.png" width="884" height="1078" alt="Ход скачивания: 590 из 1 392 файлов, скорость, оставшееся время, список текущих файлов, кнопки «Пауза» и «Остановить»">
+      </picture>
+    </div>
+  </section>
+
+  <section class="block" id="result" aria-labelledby="result-title">
+    <div class="section-head">
+      <h2 id="result-title">Что окажется на компьютере</h2>
+      <p>Те же папки, что на Диске. Если оригинал фото сервер не отдал, рядом ляжет большая копия с пометкой «(превью)», а сам файл попадёт в отчёт.</p>
+    </div>
+    <div class="manifest-wrap">
+      <div class="manifest" aria-label="Пример: что окажется на компьютере">
+        <header><span>Загрузки на компьютере</span><span>как на Диске</span></header>
+        <pre class="tree">Загрузки/
+└── Яндекс Диск/
+    ├── Фото/
+    │   ├── 2019 Отпуск/
+    │   │   ├── IMG_4012.JPG            <span class="st-ok">скачан</span>
+    │   │   └── IMG_4089 (превью).jpg   <span class="st-pv">превью</span>
+    │   └── Свадьба Ани и Миши/
+    │       └── DSC_0001.JPG            <span class="st-ok">скачан</span>
+    ├── Документы/
+    │   ├── Договор аренды.pdf          <span class="st-ok">скачан</span>
+    │   └── Квитанции 2025.xlsx         <span class="st-ok">скачан</span>
+    ├── Фото из безлимита/
+    │   └── 2021-07-14 12-02-11.jpg     <span class="st-ok">скачан</span>
+    └── Публичные ссылки/
+        └── Выпускной 11 «Б»/           <span class="st-dim">по ссылке</span>
+
+<span class="st-dim">Видео/Новый год 2023.mp4</span>                <span class="st-miss">не отдаётся → в отчёт</span></pre>
+        <div class="legend">
+          <span><b class="st-ok">скачан</b> — оригинал</span>
+          <span><b class="st-pv">превью</b> — оригинал не отдаётся, сохранена большая копия</span>
+          <span><b class="st-miss">не отдаётся</b> — можно повторить позже</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="zip" aria-labelledby="zip-title">
+    <div class="cloud">
+      <div>
+        <div class="section-head">
+          <h2 id="zip-title">Нужен один архив?</h2>
+          <p>Выделите файлы на Диске и в блоке «Куда сохранить» выберите «ZIP-архивом». Файлы скачиваются и сразу складываются в архив прямо в браузере, по отдельности на компьютер они не сохраняются.</p>
+        </div>
+        <ul>
+          <li><b>Сжатие там, где оно помогает</b><span>Документы, таблицы и текст сжимаются в разы. Фото и видео уже сжаты, поэтому архив с ними весит почти столько же, сколько сами файлы.</span></li>
+          <li><b>Части по 1, 2 или 4 ГБ</b><span>Большой архив сохраняется частями, каждая открывается сама по себе. Часть «4 ГБ» помещается на флешку.</span></li>
+          <li><b>Папки и даты на месте</b><span>Внутри архива те же папки, что на Диске, у файлов даты изменения с Диска. Имена записываются в UTF-8, как их понимают современные Windows, macOS, 7-Zip и WinRAR.</span></li>
+        </ul>
+      </div>
+      <picture class="shot-inline">
+        <source srcset="zip-setup-dark.png" media="(prefers-color-scheme: dark)">
+        <img src="zip-setup.png" width="884" height="1776" alt="Панель расширения: выбрано «Выделенное», куда сохранить — «ZIP-архивом на этот компьютер», размер частей 2 ГБ">
+      </picture>
+    </div>
+  </section>
+
+  <section class="block" id="cloud" aria-labelledby="cloud-title">
+    <div class="cloud">
+      <div>
+        <div class="section-head">
+          <h2 id="cloud-title">Мало места на компьютере?</h2>
+          <p>Файлы можно отправлять сразу в другое хранилище. Каждый файл скачивается с Яндекса и тут же уходит дальше через браузер, на диск компьютера он не записывается.</p>
+        </div>
+        <ul>
+          <li><b>WebDAV</b><span>Nextcloud, ownCloud, свой сервер или NAS (Synology, QNAP), Hetzner Storage Box, Koofr, pCloud.</span></li>
+          <li><b>S3-совместимые хранилища</b><span>Selectel, Yandex Object Storage, Cloudflare R2, Backblaze B2, свой MinIO. Большие файлы уходят частями.</span></li>
+        </ul>
+        <ol class="how">
+          <li>В панели нажмите «Подключить облако или сервер».</li>
+          <li>Укажите адрес и данные для входа, нажмите «Проверить подключение».</li>
+          <li>Сохраните и выберите облако в блоке «Куда сохранить».</li>
+        </ol>
+      </div>
+      <picture class="shot-inline">
+        <source srcset="cloud-settings-dark.png" media="(prefers-color-scheme: dark)">
+        <img src="cloud-settings.png" width="1456" height="2262" alt="Настройки: выбор хранилища, адрес папки WebDAV, логин, пароль и сообщение «Подключение работает»">
+      </picture>
+    </div>
+  </section>
+
+  <section class="block" id="features" aria-labelledby="features-title">
+    <div class="section-head">
+      <h2 id="features-title">Что умеет</h2>
+    </div>
+    <dl class="features">
+      <div><dt>Весь Диск, папка или выделенное</dt><dd>Плюс публичные ссылки вида <code>disk.yandex.ru/d/…</code>, для них даже не нужен аккаунт.</dd></div>
+      <div><dt>Выбор вручную</dt><dd>Отметьте галочками нужные файлы и папки прямо в панели — хоть из разных мест Диска.</dd></div>
+      <div><dt>Фото из «Безлимита»</dt><dd>Их нет в разделе «Файлы». Расширение находит их через раздел «Фото» и кладёт в отдельную папку.</dd></div>
+      <div><dt>Продолжение после перерыва</dt><dd>Закрыли вкладку или перезапустили браузер — откройте Диск снова. Уже скачанное заново не качается.</dd></div>
+      <div><dt>Повтор неудачных</dt><dd>Файлы, которые сервер Яндекса не отдал, можно скачать позже одной кнопкой.</dd></div>
+      <div><dt>Превью, если оригинал недоступен</dt><dd>Для фото сохраняется самая большая доступная копия с пометкой «(превью)» в имени.</dd></div>
+      <div><dt>Одним ZIP-архивом</dt><dd>Выделенное, папка или весь Диск — в архив прямо в браузере. Большой архив делится на части.</dd></div>
+      <div><dt>Сразу в облако или на свой сервер</dt><dd>WebDAV или S3: файлы не занимают место на компьютере.</dd></div>
+      <div><dt>Отчёт</dt><dd>CSV-файл со списком того, что не скачалось, и причинами. Открывается в Excel.</dd></div>
+      <div><dt>Бережно к серверам Яндекса</dt><dd>4 файла одновременно, паузы между запросами. Если Яндекс просит подождать — расширение ждёт.</dd></div>
+    </dl>
+  </section>
+
+  <section class="block" id="notes" aria-labelledby="notes-title">
+    <div class="section-head">
+      <h2 id="notes-title">Что важно знать</h2>
+    </div>
+    <ul class="notes">
+      <li><b>Не все файлы скачаются с первого раза.</b> После аварии часть серверов хранения Яндекса не отвечает. Такие файлы попадут в отчёт; нажмите «Повторить неудачные» позже.</li>
+      <li><b>Превью — не оригинал.</b> Это уменьшенная копия фото. Когда серверы оживут, кнопка «Ещё раз попробовать оригиналы» заменит превью оригиналами.</li>
+      <li><b>Большой Диск качается долго.</b> Файлы идут по одному, скорость зависит от серверов Яндекса. Можно поставить на паузу и продолжить в другой день.</li>
+      <li><b>Проверьте место на компьютере.</b> Чтобы качать на внешний диск, укажите его как папку загрузок в настройках браузера.</li>
+      <li><b>Корзина не скачивается.</b> Нужное сначала восстановите из корзины.</li>
+      <li><b>Яндекс может изменить сайт.</b> Расширение пользуется тем же внутренним API, что и сама веб-версия Диска. Если его поменяют, понадобится обновление.</li>
+    </ul>
+  </section>
+
+  <section class="block" id="trust" aria-labelledby="trust-title">
+    <div class="pair">
+      <div>
+        <h2 id="trust-title">Ваши данные остаются у вас</h2>
+        <p style="margin-top:16px">Расширение работает только на страницах Яндекс Диска и использует вход в аккаунт, который уже есть в вашем браузере. Пароль оно не спрашивает.</p>
+        <p>Запросы уходят только на серверы Яндекса, файлы сохраняются прямо на ваш компьютер. Аналитики, рекламы и своего сервера у расширения нет.</p>
+      </div>
+      <div>
+        <h2>Открытый код</h2>
+        <p style="margin-top:16px">Весь код открыт: можно проверить, что расширение делает, или собрать его самому. Нашли ошибку или Яндекс что-то поменял — напишите на GitHub.</p>
+        <div class="facts">
+          <span class="fact">Лицензия MIT</span>
+          <span class="fact">Manifest V3</span>
+          <span class="fact">36 модульных тестов</span>
+          <span class="fact">99 проверок в браузере</span>
+        </div>
+        <p style="margin-top:16px"><a data-link="repo" href="https://github.com/verhogladov/yandex-disk-download-all" target="_blank" rel="noopener">Исходный код на GitHub</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="support" aria-labelledby="support-title" data-if-any="donate help" hidden>
+    <div class="section-head">
+      <h2 id="support-title">Поддержка</h2>
+    </div>
+    <div class="support">
+      <div data-if="donate" hidden>
+        <h3>Поддержать проект</h3>
+        <p>Расширение бесплатное. Если оно помогло спасти ваши файлы, можно поблагодарить автора.</p>
+        <a class="btn primary" data-link="donate" href="#" target="_blank" rel="noopener">Поддержать</a>
+      </div>
+      <div data-if="help" hidden>
+        <h3>Помощь со скачиванием</h3>
+        <p>Не получается самостоятельно? Помогу установить расширение и выгрузить Диск. Помощь платная, договоримся в переписке.</p>
+        <a class="btn" data-link="help" href="#" target="_blank" rel="noopener">Написать</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="faq" aria-labelledby="faq-title">
+    <div class="section-head">
+      <h2 id="faq-title">Вопросы</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Сколько это стоит?</summary>
+        <div class="answer"><p>Нисколько. Расширение бесплатное, код открыт.</p></div>
+      </details>
+      <details>
+        <summary>Это безопасно для моего аккаунта?</summary>
+        <div class="answer"><p>Расширение делает те же запросы, что и сама веб-версия Диска, когда вы нажимаете «Скачать» у одного файла. Пароль и токены оно не запрашивает и никуда не отправляет. Код можно проверить на GitHub.</p></div>
+      </details>
+      <details>
+        <summary>В каких браузерах работает?</summary>
+        <div class="answer"><p>Проверено автотестами в Google Chrome. Яндекс Браузер, Edge, Opera, Brave и Vivaldi построены на том же движке, установка в них такая же. Firefox и Safari пока не поддерживаются: в них расширения устроены иначе.</p></div>
+      </details>
+      <details>
+        <summary>Работает ли на телефоне?</summary>
+        <div class="answer"><p>Нет. В мобильных Chrome и Safari расширения не устанавливаются, поэтому нужен компьютер с Windows, macOS или Linux. Окно расширения при этом помещается и на узком экране.</p></div>
+      </details>
+      <details>
+        <summary>Есть ли перевод на мой язык?</summary>
+        <div class="answer"><p>Окно расширения переведено на 23 языка: языки стран СНГ, Грузии и Молдовы, а также татарский, башкирский, чувашский, якутский, чеченский, осетинский, бурятский, удмуртский, каракалпакский и крымскотатарский. Язык выбирается в верхней строке окна. Инструкции на этих языках — <a href="#install">в разделе установки</a>. Переводы сделаны без носителей языков, исправления приветствуются.</p></div>
+      </details>
+      <details>
+        <summary>Почему часть файлов не скачалась?</summary>
+        <div class="answer"><p>Сервер Яндекса их сейчас не отдаёт: после аварии часть серверов хранения не отвечает. Это не ошибка расширения и не значит, что файлы пропали. Попробуйте «Повторить неудачные» через несколько часов или дней.</p></div>
+      </details>
+      <details>
+        <summary>Браузер спрашивает, куда сохранить каждый файл</summary>
+        <div class="answer"><p>Выключите «Всегда указывать место для скачивания» в настройках браузера (<code>chrome://settings/downloads</code>) и нажмите «Продолжить» в панели расширения.</p></div>
+      </details>
+      <details>
+        <summary>Можно закрыть ноутбук на ночь?</summary>
+        <div class="answer"><p>Можно. Когда компьютер проснётся, откройте вкладку Диска: в первые 10 минут после перерыва загрузка продолжится сама, позже — по кнопке «Продолжить».</p></div>
+      </details>
+      <details>
+        <summary>Можно скачать не всё, а только нужное?</summary>
+        <div class="answer"><p>Да. Выделите файлы на сайте Диска — кнопка станет «Скачать выделенное». Или нажмите в панели «Выбрать файлы и папки…» и отметьте нужное галочками: можно открывать папки и выбирать в разных местах.</p></div>
+      </details>
+      <details>
+        <summary>Можно скачать одним архивом, как раньше?</summary>
+        <div class="answer"><p>Да. В блоке «Куда сохранить» выберите «ZIP-архивом на этот компьютер». Архив собирается в браузере и появляется в «Загрузках», когда всё скачается. Если он больше выбранного размера (1, 2 или 4 ГБ), сохраняется частями. Пока часть собирается, она занимает временное место на диске компьютера.</p><p>Фото и видео в архиве почти не уменьшаются: они уже сжаты. Сильно сжимаются только документы и текст.</p></div>
+      </details>
+      <details>
+        <summary>Можно сразу в Google Диск или Dropbox?</summary>
+        <div class="answer"><p>Пока нет: для них нужно отдельно регистрировать приложение у каждого сервиса. Сейчас поддерживаются хранилища с доступом по WebDAV и S3. Если вы умеете работать в терминале, <code>rclone serve webdav</code> раздаёт любое облако по WebDAV.</p></div>
+      </details>
+      <details>
+        <summary>Где хранятся пароль и ключи от облака?</summary>
+        <div class="answer"><p>Только в вашем браузере, в хранилище расширения. Отправляются они только на указанный вами сервер. Лучше создать отдельный пароль приложения или ключ с доступом к одному бакету.</p></div>
+      </details>
+      <details>
+        <summary>Почему расширения нет в магазине Chrome?</summary>
+        <div class="answer"><p>Оно появилось недавно и пока распространяется архивом. Ручная установка занимает две минуты и работает так же, как установка из магазина.</p></div>
+      </details>
+    </div>
+  </section>
+</div>
+
+<footer class="bottom">
+  <div class="wrap">
+    <nav aria-label="Ссылки">
+      <a data-link="repo" href="https://github.com/verhogladov/yandex-disk-download-all" target="_blank" rel="noopener">GitHub</a>
+      <a data-link="issues" href="https://github.com/verhogladov/yandex-disk-download-all/issues" target="_blank" rel="noopener">Сообщить об ошибке</a>
+      <a href="#install">Установка</a>
+    </nav>
+    <p>Неофициальное расширение, не связано с ООО «Яндекс». «Яндекс» и «Яндекс Диск» — товарные знаки их владельцев. Код распространяется по лицензии MIT.</p>
+  </div>
+</footer>
+
+<script>
+  // Настройки сайта. Пустая строка — блок или ссылка скрыты.
+  const SITE = {
+    repo: 'https://github.com/verhogladov/yandex-disk-download-all',
+    download: 'https://github.com/verhogladov/yandex-disk-download-all/releases/latest/download/yandex-disk-download-all.zip',
+    donate: '', // CloudTips, ЮMoney или Boosty — появится «Поддержать проект»
+    help: '', // Telegram или почта для платной помощи — появится «Помощь со скачиванием»
+  };
+  SITE.issues = SITE.repo ? SITE.repo + '/issues' : '';
+  for (const a of document.querySelectorAll('[data-link]')) {
+    const url = SITE[a.dataset.link];
+    if (url) a.href = url;
+    else a.hidden = true;
+  }
+  for (const el of document.querySelectorAll('[data-if]')) el.hidden = !SITE[el.dataset.if];
+  for (const el of document.querySelectorAll('[data-if-any]')) {
+    el.hidden = !el.dataset.ifAny.split(' ').some((key) => SITE[key]);
+  }
+</script>

@@ -1,0 +1,14 @@
+{
+  "name": "yandex-disk-download-all-e2e",
+  "private": true,
+  "description": "Проверка расширения в Chrome for Testing против поддельного Яндекс Диска, WebDAV и S3",
+  "scripts": {
+    "test": "node run.js",
+    "layout": "node layout.js"
+  },
+  "devDependencies": {
+    "aws4": "^1.13.2",
+    "puppeteer": "^24.43.1",
+    "s3rver": "^3.7.1"
+  }
+}

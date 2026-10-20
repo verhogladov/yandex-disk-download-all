@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="opt.pageTitle">Куда переносить файлы — Скачать всё с Яндекс Диска</title>
+<style>
+:root {
+  --bg: #f5f7fb; --sheet: #ffffff; --fg: #1d2129; --muted: #5d6576; --border: #dfe4ec;
+  --accent: #3a5ae8; --accent-hover: #2f4dd4; --on-accent: #ffffff; --soft: #eef2fb;
+  --ok-bg: #e5f5ec; --ok: #1d6b42; --err-bg: #fde8e7; --err: #a8231b; --warn-bg: #fff4dc; --warn: #6b4a00;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14171c; --sheet: #1d2127; --fg: #e8eaee; --muted: #a1a8b3; --border: #343a44;
+    --accent: #6f8bff; --accent-hover: #86a0ff; --on-accent: #0c1020; --soft: #232a38;
+    --ok-bg: #173225; --ok: #7ad6a1; --err-bg: #3a1d1b; --err: #ff9b93; --warn-bg: #352b16; --warn: #f2d27d;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+/* Шрифт задаём именно у body: Chrome ставит страницам расширений свой body { font-size: 75% }. */
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; padding: 32px max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left)); }
+main { max-width: 680px; margin: 0 auto; display: grid; gap: 20px; }
+/* На узком экране список языков уходит на вторую строку, а не раздвигает страницу вбок. */
+header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+header > div { flex: 1 1 auto; min-width: 0; max-width: calc(100% - 52px); }
+#lang { font: inherit; font-size: 14px; color: var(--fg); background: var(--sheet); border: 1px solid var(--border); border-radius: 9px; padding: 6px 8px; max-width: 170px; margin-left: auto; }
+header img { width: 40px; height: 40px; border-radius: 10px; }
+a { color: var(--accent); text-underline-offset: 2px; }
+h1 { font-size: 22px; margin: 0; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.card { background: var(--sheet); border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: grid; gap: 14px; }
+.choices { display: grid; gap: 8px; }
+.choice { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; cursor: pointer; background: var(--sheet); }
+.choice:hover { background: var(--soft); }
+.choice input { margin-top: 4px; accent-color: var(--accent); }
+.choice b { display: block; }
+.choice small { color: var(--muted); }
+.field { display: grid; gap: 4px; }
+.field span { font-weight: 600; font-size: 14px; }
+.field small { color: var(--muted); }
+input[type=text], input[type=url], input[type=password] { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 9px 11px; width: 100%; }
+input:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 2px; }
+.check { display: flex; gap: 8px; align-items: flex-start; }
+.check input { margin-top: 4px; accent-color: var(--accent); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+button { font: inherit; font-weight: 600; border-radius: 10px; padding: 10px 16px; cursor: pointer; border: 1px solid var(--border); background: var(--sheet); color: var(--fg); }
+button:hover { background: var(--soft); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+button.primary:hover { background: var(--accent-hover); }
+button:disabled { opacity: .55; cursor: default; }
+.status { border-radius: 10px; padding: 10px 12px; }
+.status.ok { background: var(--ok-bg); color: var(--ok); }
+.status.err { background: var(--err-bg); color: var(--err); }
+.status.wait { background: var(--soft); }
+.note { background: var(--warn-bg); color: var(--warn); border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+details summary { cursor: pointer; color: var(--muted); }
+details ul { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
+code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 13px; background: var(--soft); padding: 1px 5px; border-radius: 5px; overflow-wrap: anywhere; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="icons/icon128.png" alt="">
+    <div>
+      <h1 data-i18n="opt.title">Куда переносить файлы</h1>
+      <p class="muted" data-i18n="opt.subtitle">Скачать всё с Яндекс Диска</p>
+    </div>
+    <select id="lang" aria-label="Язык"></select>
+  </header>
+
+  <p data-i18n="opt.intro">Если на компьютере не хватает места, файлы можно сразу отправлять в облако или на свой сервер.</p>
+
+  <section class="card" aria-labelledby="kind-title">
+    <h2 id="kind-title" style="font-size:16px;margin:0" data-i18n="opt.storage">Хранилище</h2>
+    <div class="choices">
+      <label class="choice"><input type="radio" name="kind" value="local" id="kind-local"><span><b data-i18n="opt.local">На этот компьютер</b><small data-i18n="opt.localSub">Файлы сохраняются в папку «Загрузки».</small></span></label>
+      <label class="choice"><input type="radio" name="kind" value="webdav" id="kind-webdav"><span><b>WebDAV</b><small data-i18n="opt.webdavSub">Nextcloud, ownCloud, свой сервер, NAS.</small></span></label>
+      <label class="choice"><input type="radio" name="kind" value="s3" id="kind-s3"><span><b data-i18n="opt.s3">S3-совместимое хранилище</b><small data-i18n="opt.s3Sub">Selectel, Yandex Object Storage, Cloudflare R2, Backblaze B2.</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" id="webdav-form" hidden aria-label="WebDAV">
+    <label class="field"><span data-i18n="opt.davUrl">Адрес папки</span><input type="url" id="dav-url" data-i18n-placeholder="opt.davUrlPlaceholder" autocomplete="off" spellcheck="false"><small data-i18n="opt.davUrlHelp">Папка, в которую будет переноситься Диск.</small></label>
+    <label class="field"><span data-i18n="opt.login">Логин</span><input type="text" id="dav-user" autocomplete="off" spellcheck="false"></label>
+    <label class="field"><span data-i18n="opt.password">Пароль</span><input type="password" id="dav-pass" autocomplete="new-password"><small data-i18n="opt.passwordHelp">Лучше создать отдельный пароль приложения.</small></label>
+    <details>
+      <summary data-i18n="opt.examples">Примеры адресов</summary>
+      <ul id="dav-examples"></ul>
+    </details>
+  </section>
+
+  <section class="card" id="s3-form" hidden aria-label="S3">
+    <label class="field"><span data-i18n="opt.endpoint">Адрес хранилища (endpoint)</span><input type="url" id="s3-endpoint" placeholder="https://s3.ru-1.storage.selcloud.ru" autocomplete="off" spellcheck="false"></label>
+    <label class="field"><span data-i18n="opt.region">Регион</span><input type="text" id="s3-region" placeholder="ru-1" autocomplete="off" spellcheck="false"></label>
+    <label class="field"><span data-i18n="opt.bucket">Бакет</span><input type="text" id="s3-bucket" autocomplete="off" spellcheck="false"></label>
+    <label class="field"><span data-i18n="opt.prefix">Папка в бакете</span><input type="text" id="s3-prefix" data-i18n-placeholder="opt.prefixPlaceholder" autocomplete="off" spellcheck="false"></label>
+    <label class="field"><span>Access Key ID</span><input type="text" id="s3-key" autocomplete="off" spellcheck="false"></label>
+    <label class="field"><span>Secret Access Key</span><input type="password" id="s3-secret" autocomplete="new-password"><small data-i18n="opt.secretHelp">Лучше выпустить ключ с доступом только к этому бакету.</small></label>
+    <label class="check"><input type="checkbox" id="s3-path" checked><span id="s3-path-text"></span></label>
+    <details>
+      <summary data-i18n="opt.s3Examples">Примеры</summary>
+      <ul id="s3-examples"></ul>
+    </details>
+  </section>
+
+  <div class="note" id="privacy-note" data-i18n="opt.privacy">Логин, пароль и ключи хранятся только в этом браузере.</div>
+
+  <div class="row">
+    <button type="button" id="test" data-i18n="opt.test">Проверить подключение</button>
+    <button type="button" class="primary" id="save" data-i18n="opt.save">Сохранить</button>
+  </div>
+  <div class="status" id="status" hidden role="status"></div>
+  <p class="muted" id="translation-note" hidden style="font-size:13px"><span></span> <a href="https://github.com/verhogladov/yandex-disk-download-all/issues" target="_blank" rel="noopener">GitHub</a></p>
+</main>
+<script src="src/i18n.js"></script>
+<script src="src/destinations.js"></script>
+<script src="src/options.js"></script>
+</body>
+</html>

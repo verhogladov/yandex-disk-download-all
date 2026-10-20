@@ -1,0 +1,86 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "short_name": "__MSG_extShortName__",
+  "version": "1.0.0",
+  "default_locale": "ru",
+  "description": "__MSG_extDescription__",
+  "minimum_chrome_version": "109",
+  "permissions": [
+    "downloads",
+    "downloads.ui",
+    "storage",
+    "unlimitedStorage",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "https://cloud-api.yandex.net/*",
+    "https://*.disk.yandex.ru/*",
+    "https://*.disk.yandex.com/*",
+    "https://*.disk.yandex.net/*",
+    "https://*.storage.yandex.net/*",
+    "https://*.storage.yandex.ru/*"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_title": "__MSG_actionTitle__",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://disk.yandex.ru/*",
+        "https://disk.yandex.com/*",
+        "https://disk.yandex.by/*",
+        "https://disk.yandex.kz/*",
+        "https://disk.yandex.uz/*",
+        "https://disk.yandex.com.tr/*",
+        "https://disk.yandex.az/*",
+        "https://disk.yandex.com.am/*",
+        "https://disk.yandex.com.ge/*",
+        "https://disk.yandex.co.il/*",
+        "https://disk.yandex.kg/*",
+        "https://disk.yandex.lt/*",
+        "https://disk.yandex.lv/*",
+        "https://disk.yandex.md/*",
+        "https://disk.yandex.tj/*",
+        "https://disk.yandex.tm/*",
+        "https://disk.yandex.ee/*",
+        "https://disk.yandex.fr/*",
+        "https://disk.360.yandex.ru/*"
+      ],
+      "js": [
+        "src/util.js",
+        "src/i18n.js",
+        "src/private-api.js",
+        "src/public-api.js",
+        "src/storage.js",
+        "src/engine.js",
+        "src/ui.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Descarcă tot din Yandex Disk"
+  },
+  "extShortName": {
+    "message": "Descarcă tot"
+  },
+  "extDescription": {
+    "message": "Neoficial. Descărcați tot Discul, dosarele, elementele selectate și linkurile publice: ca fișiere cu dosare sau ca arhivă ZIP."
+  },
+  "actionTitle": {
+    "message": "Descărcare din Yandex Disk"
+  }
+}

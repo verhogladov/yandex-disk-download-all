@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Yandex Diskdan hammasini yuklab olish"
+  },
+  "extShortName": {
+    "message": "Hammasini yuklab olish"
+  },
+  "extDescription": {
+    "message": "Norasmiy. Butun Disk, papkalar, belgilanganlar va ommaviy havolalarni yuklab olish: papkalari bilan fayllar yoki ZIP-arxiv."
+  },
+  "actionTitle": {
+    "message": "Yandex Diskdan yuklab olish"
+  }
+}

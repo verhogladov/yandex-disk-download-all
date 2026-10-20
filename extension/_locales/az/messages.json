@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Yandex Diskdən hər şeyi endir"
+  },
+  "extShortName": {
+    "message": "Hər şeyi endir"
+  },
+  "extDescription": {
+    "message": "Qeyri-rəsmi. Bütün Diski, qovluqları, seçilənləri və ictimai keçidləri endirin: qovluqlu fayllar və ya ZIP arxivi kimi."
+  },
+  "actionTitle": {
+    "message": "Yandex Diskdən endirmək"
+  }
+}
