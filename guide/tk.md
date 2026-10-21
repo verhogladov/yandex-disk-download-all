@@ -29,6 +29,7 @@ Telefonda işlemeýär: mobil brauzerlere beýle giňeltme gurnalmaýar. Kompýu
 1. Salgy setirine `chrome://extensions` ýazyň we Enter basyň.
 2. Ýokarky sag burçda **«Режим разработчика»** (işläp düzüjiniň tertibi, iňlisçe Developer mode) wyklýuçatelini açyň.
 3. Ýokarky çep burçdaky birinji düwmä basyň — **«Загрузить распакованное расширение»** (açylan giňeltmäni ýüklemek, iňlisçe Load unpacked).
+   ![«Режим разработчика» (1) we «Загрузить распакованное расширение» (2) nirede](../docs/guide-extensions.png)
 4. `yandex-disk-download-all` bukjasyny saýlaň (içinde `manifest.json` faýly bolan bukja).
 5. Sanawda giňeltme peýda bolar. Taýýar.
 
@@ -42,7 +43,8 @@ Telefonda işlemeýär: mobil brauzerlere beýle giňeltme gurnalmaýar. Kompýu
 
 Ýogsa brauzer her faýl hakda sorar, olar bolsa müňlerçe bolup biler.
 
-- **Chrome:** `chrome://settings/downloads` açyň we **«Всегда указывать место для скачивания»** (her faýly nirä saklamalydygyny soramak) öçüriň.
+- **Chrome:** `chrome://settings/downloads` açyň we **«Перед скачиванием спрашивать, куда сохранить файл»** (her faýly nirä saklamalydygyny soramak) öçüriň.
+  ![Wyklýuçatel öçük bolmaly](../docs/guide-downloads.png)
 - **Ýandeks Brauzer:** «Настройки» → «Инструменты» → «Загруженные файлы» → **«Всегда спрашивать, куда сохранять файлы»** belgisini aýyryň.
 - **Beýleki brauzerler:** sazlamalaryň göçürmeler bölüminde her faýly nirä saklamak baradaky soragy öçüriň.
 
@@ -50,13 +52,14 @@ Telefonda işlemeýär: mobil brauzerlere beýle giňeltme gurnalmaýar. Kompýu
 
 1. [disk.yandex.ru](https://disk.yandex.ru) açyň we hasabyňyza giriň. Disk öňden açyk bolsa — sahypany täzeläň (F5).
 2. Aşaky sag burçda gök **«Tutuş Diski göçürip almak»** düwmesi peýda bolar. Bukjanyň içinde ol «Bukjany göçürip almak» diýip atlandyrylýar, faýllary belleseňiz — «Bellenenleri göçürip almak».
+   ![Diskdäki gök düwme](../docs/guide-button.png)
 3. Oňa basyň. Penjire açylar:
    - **«Näme göçürmeli»** — tutuş Disk, şu bukja, bellenenler ýa-da sanawdan «Faýllary we bukjalary saýlamak…»;
    - **«Haýsy faýllar»** — hemmesi ýa-da «Diňe gerekli görnüşler» (meselem, diňe suratlar we wideo);
    - **«Nirä saklamaly»** — kompýutere Diskdäki ýaly faýllar görnüşinde, bir ZIP-arhiw görnüşinde ýa-da başga bulut ammaryna.
 4. **«Göçürmäge başlamak»** düwmesine basyň we garaşyň. Penjirede näçesiniň göçürilendigi görünýär.
 
-![Giňeltmäniň penjiresi](../docs/setup.png)
+![Giňeltmäniň penjiresi](../docs/guide-window.png)
 
 *Suratda — rusça interfeýs. Dil penjiräniň ýokarky setirinde saýlanýar: 23 dil bar, türkmençe hem.*
 

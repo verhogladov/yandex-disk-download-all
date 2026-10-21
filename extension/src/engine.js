@@ -529,6 +529,9 @@
         meta.finishedAt = Date.now();
         this.markMeta();
         await this.afterStop();
+        // Страховка: подчистить записи, которые не стёрлись по ходу (например, загрузка,
+        // начавшаяся уже после того, как её перестали ждать).
+        if (meta.opt.eraseHistory && this.bg.sweep) this.bg.sweep(meta.createdAt);
       }
       await this.flush();
       this.emit();

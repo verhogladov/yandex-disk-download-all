@@ -29,6 +29,7 @@ Telefonda islemeydi: mobil brauzerlerge bunday keńeytpeni ornatıp bolmaydı. K
 1. Mánzil qatarına `chrome://extensions` dep jazıń hám Enter basıń.
 2. Joqarǵı oń múyeshte **«Режим разработчика»** (islep shıǵarıwshı rejimi, inglisshe Developer mode) almastırǵıshın qosıń.
 3. Joqarǵı shep múyeshtegi birinshi túymeni basıń — **«Загрузить распакованное расширение»** (ashılǵan keńeytpeni júklew, inglisshe Load unpacked).
+   ![«Режим разработчика» (1) hám «Загрузить распакованное расширение» (2) qayda](../docs/guide-extensions.png)
 4. `yandex-disk-download-all` papkasın saylań (ishinde `manifest.json` faylı bar papka).
 5. Dizimde keńeytpe payda boladı. Tayar.
 
@@ -42,7 +43,8 @@ Telefonda islemeydi: mobil brauzerlerge bunday keńeytpeni ornatıp bolmaydı. K
 
 Áytpese brauzer hár bir fayl haqqında soraydı, al olar mıńlaǵan bolıwı múmkin.
 
-- **Chrome:** `chrome://settings/downloads` ashıń hám **«Всегда указывать место для скачивания»** (hár bir fayldı qayda saqlawdı soraw) degendi óshiriń.
+- **Chrome:** `chrome://settings/downloads` ashıń hám **«Перед скачиванием спрашивать, куда сохранить файл»** (hár bir fayldı qayda saqlawdı soraw) degendi óshiriń.
+  ![Almastırǵısh óshirilgen bolıwı kerek](../docs/guide-downloads.png)
 - **Yandex Brauzer:** «Настройки» → «Инструменты» → «Загруженные файлы» → **«Всегда спрашивать, куда сохранять файлы»** belgisin alıp taslań.
 - **Basqa brauzerler:** sazlamalardıń júklewler bóliminde hár bir fayldı qayda saqlaw haqqındaǵı sorawdı óshiriń.
 
@@ -50,13 +52,14 @@ Telefonda islemeydi: mobil brauzerlerge bunday keńeytpeni ornatıp bolmaydı. K
 
 1. [disk.yandex.ru](https://disk.yandex.ru) ashıń hám akkauntıńızǵa kiriń. Disk aldınnan ashıq bolsa — betti jańalań (F5).
 2. Tómengi oń múyeshte kók **«Pútkil Disktı júklep alıw»** túymesi payda boladı. Papka ishinde ol «Papkanı júklep alıw» dep ataladı, al fayllardı belgileseńiz — «Belgilengendi júklep alıw».
+   ![Disktegi kók túyme](../docs/guide-button.png)
 3. Onı basıń. Ayna ashıladı:
    - **«Neni júklep alıw»** — pútkil Disk, usı papka, belgilengenler yamasa dizimnen «Fayllar hám papkalardı saylaw…»;
    - **«Qanday fayllar»** — hámmesi yamasa «Tek kerekli túrler» (mısalı, tek foto hám video);
    - **«Qayda saqlaw»** — kompyuterge Disktegidey fayllar túrinde, bir ZIP-arxiv túrinde yamasa basqa bultqa.
 4. **«Júklewdi baslaw»** túymesin basıp, kútiń. Aynada qanshası júklengeni kórinedi.
 
-![Keńeytpe aynası](../docs/setup.png)
+![Keńeytpe aynası](../docs/guide-window.png)
 
 *Súwrette — rus tilindegi interfeys. Til aynanıń joqarǵı qatarında saylanadı: 23 til bar, qaraqalpaqsha da bar.*
 

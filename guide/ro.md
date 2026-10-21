@@ -56,7 +56,7 @@ Altfel browserul va întreba despre fiecare fișier, iar ele pot fi mii.
    - **„Unde să salvăm”** — pe calculator ca fișiere, ca pe Disc, ca o singură arhivă ZIP sau în alt cloud.
 4. Apăsați **„Începe descărcarea”** și așteptați. În fereastră se vede cât s-a descărcat deja.
 
-![Fereastra extensiei](../docs/setup.png)
+![Fereastra extensiei](../docs/guide-window.png)
 
 *În imagine este interfața în rusă. Limba se alege în rândul de sus al ferestrei: sunt 23 de limbi, inclusiv româna.*
 

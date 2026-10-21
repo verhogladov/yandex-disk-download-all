@@ -29,6 +29,7 @@ Telefonda işlemey: mobil brauzerlerge böyle kenişletme qurulmay. Kompyuter ke
 1. Adres satırına `chrome://extensions` yazıñız ve Enter basıñız.
 2. Yuqarı sağ köşede **«Режим разработчика»** (inkişafçı rejimi, ingilizce Developer mode) şalterini açıñız.
 3. Yuqarı sol köşedeki birinci dögmege basıñız — **«Загрузить распакованное расширение»** (açılğan kenişletmeni yüklemek, ingilizce Load unpacked).
+   ![«Режим разработчика» (1) ve «Загрузить распакованное расширение» (2) qayda](../docs/guide-extensions.png)
 4. `yandex-disk-download-all` papkasını saylañız (içinde `manifest.json` faylı olğan papka).
 5. Cedvelde kenişletme peyda olur. Azır.
 
@@ -42,7 +43,8 @@ Telefonda işlemey: mobil brauzerlerge böyle kenişletme qurulmay. Kompyuter ke
 
 Yoqsa brauzer er fayl aqqında sorar, olar ise biñlernen ola bile.
 
-- **Chrome:** `chrome://settings/downloads` açıñız ve **«Всегда указывать место для скачивания»** (er faylnı qayda saqlamaq kerek olğanını sorav) degenini söndüriñiz.
+- **Chrome:** `chrome://settings/downloads` açıñız ve **«Перед скачиванием спрашивать, куда сохранить файл»** (er faylnı qayda saqlamaq kerek olğanını sorav) degenini söndüriñiz.
+  ![Şalter söndürilgen olmalı](../docs/guide-downloads.png)
 - **Yandex Brauzer:** «Настройки» → «Инструменты» → «Загруженные файлы» → **«Всегда спрашивать, куда сохранять файлы»** belgisini çıqarıñız.
 - **Diger brauzerler:** sazlamalarnıñ yüklemeler bölüginde er faylnı qayda saqlamaq aqqındaki sualni söndüriñiz.
 
@@ -50,13 +52,14 @@ Yoqsa brauzer er fayl aqqında sorar, olar ise biñlernen ola bile.
 
 1. [disk.yandex.ru](https://disk.yandex.ru) açıñız ve akkauntıñızğa kiriñiz. Disk evelden açıq olsa — saifeni yañartıñız (F5).
 2. Aşağı sağ köşede mavı **«Bütün Disk'ni yüklep almaq»** dögmesi peyda olur. Papka içinde o «Papkanı yüklep almaq» dep adlana, fayllarnı belgileseñiz ise — «Belgilengenni yüklep almaq».
+   ![Diskteki mavı dögme](../docs/guide-button.png)
 3. Oña basıñız. Pencere açılır:
    - **«Neni yüklep almalı»** — bütün Disk, bu papka, belgilengenler ya da cedvelden «Fayllar ve papkalarnı saylamaq…»;
    - **«Qaysı fayllar»** — episi ya da «Tek kerekli çeşitler» (meselâ, tek fotoresim ve video);
    - **«Qayda saqlamalı»** — kompyuterge Disktekiler kibi fayllar olaraq, bir ZIP-arhiv olaraq ya da başqa bulutqa.
 4. **«Yüklevni başlamaq»** dögmesine basıñız ve bekleñiz. Pencerede ne qadarı yüklengeni körüne.
 
-![Kenişletme penceresi](../docs/setup.png)
+![Kenişletme penceresi](../docs/guide-window.png)
 
 *Resimde — rusça interfeys. Til pencereniñ yuqarı satırında saylana: 23 til bar, qırımtatarca da bar.*
 

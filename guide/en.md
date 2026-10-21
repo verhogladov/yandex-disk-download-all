@@ -56,7 +56,7 @@ Otherwise the browser will ask about every file, and there may be thousands of t
    - **Where to save** — to the computer as files in the same folders as on the Disk, as one ZIP archive, or to another cloud.
 4. Click **Start downloading** and wait. The window shows how much is done.
 
-![The extension window](../docs/setup.png)
+![The extension window](../docs/guide-window.png)
 
 *The screenshot shows the Russian interface. The language is chosen in the top line of the window: there are 23 languages.*
 
@@ -79,6 +79,7 @@ Otherwise the browser will ask about every file, and there may be thousands of t
 
 - The extension works only on the Yandex Disk website and only in your browser. It never asks for your Yandex password. Your files go nowhere except a cloud you connect yourself.
 - It is not a Yandex program but an independent free open-source project.
+- The extension and this guide were written by an AI (Claude by Anthropic) at the author's request. It is provided as is, without warranty: before deleting files from the Disk, check that the downloaded copies open.
 
 ## How to remove or update it
 

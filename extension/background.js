@@ -35,6 +35,18 @@ async function handle(msg, sender) {
     case 'dl:erase':
       if (!isTransfer(msg.id)) await chrome.downloads.erase({ id: msg.id }).catch(() => {});
       return { ok: true };
+    case 'dl:sweep': {
+      // Задание закончено: стираем из списка загрузок оставшиеся записи этого расширения,
+      // начатые с начала задания. Загрузки, ждущие подтверждения, и ZIP-архивы не трогаем:
+      // архив удобно открыть прямо из списка.
+      const since = Number(msg.since) || 0;
+      const items = await chrome.downloads.search({ startedAfter: new Date(since - 1000).toISOString(), limit: 0 }).catch(() => []);
+      for (const it of items) {
+        if (it.byExtensionId !== chrome.runtime.id || it.state === 'in_progress' || /\.zip$/i.test(it.filename || '')) continue;
+        await chrome.downloads.erase({ id: it.id }).catch(() => {});
+      }
+      return { ok: true };
+    }
     case 'dl:showFolder':
       chrome.downloads.showDefaultFolder();
       return { ok: true };

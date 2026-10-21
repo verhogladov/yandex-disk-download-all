@@ -42,7 +42,7 @@ Telefonda ishlamaydi: mobil brauzerlarga bunday kengaytmani oʻrnatib boʻlmaydi
 
 Aks holda brauzer har bir fayl haqida soʻraydi, ular esa minglab boʻlishi mumkin.
 
-- **Chrome:** `chrome://settings/downloads` sahifasini oching va **«Har bir faylni qayerga saqlashni soʻrash»** bandini oʻchiring (ruscha «Всегда указывать место для скачивания»).
+- **Chrome:** `chrome://settings/downloads` sahifasini oching va **«Har bir faylni qayerga saqlashni soʻrash»** bandini oʻchiring (ruscha «Перед скачиванием спрашивать, куда сохранить файл»).
 - **Yandex Brauzer:** «Настройки» → «Инструменты» → «Загруженные файлы» → **«Всегда спрашивать, куда сохранять файлы»** belgisini olib tashlang.
 - **Boshqa brauzerlar:** sozlamalarning yuklanmalar boʻlimida har bir faylni qayerga saqlash haqidagi savolni oʻchiring.
 
@@ -56,7 +56,7 @@ Aks holda brauzer har bir fayl haqida soʻraydi, ular esa minglab boʻlishi mumk
    - **«Qayerga saqlash»** — kompyuterga Diskdagi kabi fayllar sifatida, bitta ZIP-arxiv sifatida yoki boshqa bulutga.
 4. **«Yuklashni boshlash»** tugmasini bosing va kuting. Oynada qanchasi yuklanganini koʻrish mumkin.
 
-![Kengaytma oynasi](../docs/setup.png)
+![Kengaytma oynasi](../docs/guide-window.png)
 
 *Rasmda — ruscha interfeys. Til oynaning yuqori satrida tanlanadi: 23 ta til bor, oʻzbekcha ham.*
 

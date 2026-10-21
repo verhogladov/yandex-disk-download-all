@@ -29,5 +29,5 @@ A simple step-by-step guide: how to install the extension and download everythin
 | Qaraqalpaqsha | [Yandex Disktan hámmesin qalay júklep alıw kerek](kaa.md) |
 | Qırımtatarca | [Yandex Diskten episini nasıl yüklep almalı](crh.md) |
 
-Переводы сделаны с русского без носителей языков. Если видите ошибку — поправьте файл `<код>.md` или напишите на [странице вопросов](https://github.com/verhogladov/yandex-disk-download-all/issues).
-Translations were made from Russian without native speakers. If you see a mistake, edit the `<code>.md` file or write on the [issues page](https://github.com/verhogladov/yandex-disk-download-all/issues).
+Инструкции и переводы сделал ИИ (Claude от Anthropic), без участия носителей языков. Расширение работает «как есть», без гарантий. Если видите ошибку — поправьте файл `<код>.md` или напишите на [странице вопросов](https://github.com/verhogladov/yandex-disk-download-all/issues).
+The guides and translations were written by an AI (Claude by Anthropic), without native speakers. The extension is provided as is, without warranty. If you see a mistake, edit the `<code>.md` file or write on the [issues page](https://github.com/verhogladov/yandex-disk-download-all/issues).

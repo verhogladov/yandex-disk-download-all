@@ -310,7 +310,7 @@ async function main() {
     check('в панели выбран «Весь Диск»', (await ui.scope(page)) === 'all', await ui.scope(page));
     check('показан объём Диска из данных страницы', /Весь Диск[\s\S]*\d+ файл/.test(setupText));
     check('есть галочка «Безлимит»', /Безлимит/.test(setupText));
-    check('есть предупреждение про «Всегда указывать место»', /Всегда указывать место для скачивания/.test(setupText));
+    check('есть предупреждение про «Перед скачиванием спрашивать…»', /Перед скачиванием спрашивать, куда сохранить файл/.test(setupText));
     await clickButton(page, 'Начать скачивание');
     const t0 = Date.now();
     await waitJobDone(page, /^Весь Диск$/, 180000);
@@ -362,11 +362,15 @@ async function main() {
     check('превью запрошено в JPEG', mock.state.previewAccept.some((a) => a.includes('image/jpeg')), mock.state.previewAccept.join(' | '));
     // Запись стирается сразу после завершения файла, но асинхронно — даём ей пару секунд.
     let history = -1;
+    let leftover = [];
     for (let i = 0; i < 20 && history !== 0; i++) {
-      history = await sw.evaluate(() => chrome.downloads.search({ state: 'complete' }).then((x) => x.length));
+      leftover = await sw.evaluate(() =>
+        chrome.downloads.search({ state: 'complete' }).then((x) => x.map((d) => `${d.filename.split('/').pop()} (наше: ${d.byExtensionId === chrome.runtime.id}, начата ${d.startTime.slice(11, 19)})`))
+      );
+      history = leftover.length;
       if (history) await sleep(250);
     }
-    check('список загрузок браузера не засорён', history === 0, `завершённых записей: ${history}`);
+    check('список загрузок браузера не засорён', history === 0, `завершённых записей: ${history}: ${leftover.join('; ')}`);
 
     // Отчёт
     await clickButton(page, 'Отчёт (CSV)');

@@ -49,6 +49,7 @@
     status: (ids) => send({ type: 'dl:status', ids }),
     cancel: (id) => send({ type: 'dl:cancel', id }),
     erase: (id) => send({ type: 'dl:erase', id }),
+    sweep: (since) => send({ type: 'dl:sweep', since }),
     showFolder: () => send({ type: 'dl:showFolder' }),
     openSettings: () => send({ type: 'open:settings' }),
     prepare: (running, opt) => send({ type: 'job:prepare', running, quietUi: !!(opt && opt.quietUi) }),

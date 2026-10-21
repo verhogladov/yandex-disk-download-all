@@ -141,6 +141,11 @@ function fakeBg(plan = () => 'ok') {
     zipAddDelay: 3,
     zipStateDelay: 0,
     locks: 0,
+    sweeps: [],
+    async sweep(since) {
+      this.sweeps.push(since);
+      return { ok: true };
+    },
     async startZip({ jobId, idx, url, path: file, size, partBytes, firstPart }) {
       const p = plan(url, file, started.length);
       const id = 't' + nextId++;
@@ -458,6 +463,7 @@ test('скачивает всё дерево: вложенные папки, п�
   assert.equal(new Set(names.map((n) => n.toLowerCase())).size, names.length, 'все пути уникальны');
   assert.equal(source.calls.list, 1 + 3 + 1 + 1 + 1, 'папка из 95 файлов прочитана за 3 запроса');
   assert.equal(s.bytesDone, s.totalBytes - 100);
+  assert.deepEqual(bg.sweeps, [s.job.createdAt], 'в конце список загрузок подчищается один раз, с начала задания');
   // Порядок: файлы скачиваются папка за папкой.
   const firstPhoto = bg.started.findIndex((d) => d.filename.includes('/Фото/'));
   const lastPhoto = bg.started.map((d) => d.filename.includes('/Фото/')).lastIndexOf(true);

@@ -42,7 +42,7 @@ Telefonda işləmir: mobil brauzerlərə belə genişlənmə quraşdırılmır. 
 
 Əks halda brauzer hər fayl barədə soruşacaq, onlar isə minlərlə ola bilər.
 
-- **Chrome:** `chrome://settings/downloads` açın və **«Endirmədən əvvəl hər faylı hara saxlamağı soruş»** seçimini söndürün (ingiliscə Ask where to save each file before downloading, rusca «Всегда указывать место для скачивания»).
+- **Chrome:** `chrome://settings/downloads` açın və **«Endirmədən əvvəl hər faylı hara saxlamağı soruş»** seçimini söndürün (ingiliscə Ask where to save each file before downloading, rusca «Перед скачиванием спрашивать, куда сохранить файл»).
 - **Yandex Brauzer:** «Настройки» → «Инструменты» → «Загруженные файлы» → **«Всегда спрашивать, куда сохранять файлы»** işarəsini götürün.
 - **Digər brauzerlər:** parametrlərin endirmələr bölməsində hər faylın harada saxlanacağı barədə sualı söndürün.
 
@@ -56,7 +56,7 @@ Telefonda işləmir: mobil brauzerlərə belə genişlənmə quraşdırılmır. 
    - **«Hara saxlamaq»** — kompüterə Diskdəki kimi fayllar şəklində, bir ZIP arxivi şəklində və ya başqa buluda.
 4. **«Endirməyə başlamaq»** düyməsini basın və gözləyin. Pəncərədə nə qədərinin endirildiyi görünür.
 
-![Genişlənmənin pəncərəsi](../docs/setup.png)
+![Genişlənmənin pəncərəsi](../docs/guide-window.png)
 
 *Şəkildə rus dilində interfeys var. Dil pəncərənin yuxarı sətrində seçilir: 23 dil var, Azərbaycan dili də.*
 
